@@ -1,12 +1,13 @@
 import { useEffect, useMemo } from "react";
 import Loading from "../Loading/Loading";
-import { Col, Row } from "react-bootstrap";
+import { Col, Row , Card } from "react-bootstrap";
 import { header } from "../../config/config";
-import { Container, Filters, Header, card } from "./index";
+import { Container, Filters, Header, card, NewsCard, SingleCard, CardImage , CardBody , CardTitle , CardDesc } from "./index";
 import { useAppDispatch, useAppSelector } from "../../hooks/useRedux";
 import { readAllNews, readSources, readTopNews } from "../../store/slices/newsSlice/news";
 import { NewsItem } from "../NewsItem/NewsItem";
 import { NewsProps } from "../../interfaces/news";
+import image from "../Images/logoImage.png";
 import {
   buildQueryParams,
   capitaLize,
@@ -64,6 +65,9 @@ export const News = ({ category, country }: NewsProps) => {
     dispatch(readSources());
   }, []);
 
+
+  const NewsFeed = [1,2,3,4,5,6,7,8,9,10];
+
   return (
     <>
       <Filters>
@@ -80,11 +84,31 @@ export const News = ({ category, country }: NewsProps) => {
             <Row>
               {articles?.map((article, idx) => {
                 return (
-                  <Col sm={12} md={6} lg={4} xl={3} style={card} key={idx}>
+                  <Col sm={12} md={6} lg={4} style={card} key={idx}>
                     <NewsItem {...article} />
                   </Col>
                 );
               })}
+            </Row>
+            <Row>
+            <NewsCard>
+              {NewsFeed.map((item, index)=>(
+                 <SingleCard key={index}> 
+                 <CardImage>
+                   <img src={image} width={90} />
+                 </CardImage>
+                 <CardBody>
+                   <CardTitle>
+                   Header
+                   </CardTitle>
+                   <CardDesc>
+                     this is a news image regarding the technology 
+                   </CardDesc>
+                 </CardBody>
+               </SingleCard>
+              ))}
+
+            </NewsCard>
             </Row>
           </Container>
         </>
