@@ -52,14 +52,14 @@ export const useNews = ({ category, country }: NewsProps) => {
       country,
     });
     dispatch(readTopNews({ params: queryPrams }));
-  }, [category, country]);
+  }, [category, country, dispatch]);
 
   useEffect(() => {
     querySources &&
       dispatch(
         readTopNews({ params: { sources: querySources, pageSize: 100 } })
       );
-  }, [querySources]);
+  }, [querySources, dispatch]);
 
   useEffect(() => {
     if (queryFromDate && queryToDate && sources) {
@@ -74,11 +74,11 @@ export const useNews = ({ category, country }: NewsProps) => {
         })
       );
     }
-  }, [queryFromDate, queryToDate, sources]);
+  }, [queryFromDate, queryToDate, sources, dispatch]);
 
   useEffect(() => {
     dispatch(readSources());
-  }, []);
+  }, [dispatch]);
 
   const authors = useMemo(
     () =>
