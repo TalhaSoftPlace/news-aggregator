@@ -22,7 +22,7 @@ export const NewsItem = ({
         src={urlToImage}
         alt={content}
       />
-      <Card.Body>
+      <Card.Body className="card-body">
         <Card.Title>{title}</Card.Title>
         <Card.Text className="card-description">{description}</Card.Text>
         <Details source={source} publishedAt={publishedAt} />

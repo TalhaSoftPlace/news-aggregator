@@ -4,26 +4,36 @@ import { ListItems, LoadingContainer, Wrapper } from ".";
 import { useCallback, useState } from "react";
 import { DropDownProps } from "../../../interfaces/ui";
 
-export const DropDown = ({ items, loading, onItemChange }: DropDownProps) => {
-  const [source, setSelectedSource] = useState("Sources");
+export const DropDown = ({
+  items,
+  loading,
+  title,
+  onItemChange,
+}: DropDownProps) => {
+  const [source, setSelectedSource] = useState(title);
 
-  const handleSelectedSource = useCallback((source: string) => {
-    setSelectedSource(source);
-    onItemChange(source);
+  const handleSelectedItem = useCallback((value: string) => {
+    setSelectedSource(value);
+    onItemChange(value);
   }, []);
 
-  const Component = loading ? <LoadingContainer>Loading...</LoadingContainer> : items && items.length <= 0 ? <ListItems>No Date Found</ListItems> : <ListItems>
-    {items?.map(({ label, value }) => (
-      <Dropdown.Item
-        key={value}
-        onClick={() => handleSelectedSource(value)}
-        as="button"
-      >
-        {label}
-      </Dropdown.Item>
-    ))}
-  </ListItems>
-
+  const Component = loading ? (
+    <LoadingContainer>Loading...</LoadingContainer>
+  ) : !items ? (
+    <ListItems>No Date Found</ListItems>
+  ) : (
+    <ListItems>
+      {items?.map(({ label, value }) => (
+        <Dropdown.Item
+          key={value}
+          onClick={() => handleSelectedItem(value)}
+          as="button"
+        >
+          {label}
+        </Dropdown.Item>
+      ))}
+    </ListItems>
+  );
 
   return (
     <Wrapper>

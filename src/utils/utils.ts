@@ -1,6 +1,6 @@
 import { QueryParamsProps, Sources } from "../interfaces/news";
-import { useMemo } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useMemo } from "react";
+import { useSearchParams } from "react-router-dom";
 
 export const capitaLize = (string: string) => {
   return string.charAt(0).toUpperCase() + string.slice(1);
@@ -11,11 +11,15 @@ export const setDocumentTitle = (title: string) => {
 };
 
 export const transformSourcesToDropDownItems = (items: Sources[] | null) => {
-  if (!items) return [];
+  if (!items) return null;
   return items.map((item) => ({ label: item.name, value: item.id }));
 };
 
-export const buildQueryParams = ({ category, country, sources }: Partial<QueryParamsProps>) => {
+export const buildQueryParams = ({
+  category,
+  country,
+  sources,
+}: Partial<QueryParamsProps>) => {
   const queryParams: Partial<QueryParamsProps> = {};
 
   if (category && country) {
@@ -25,8 +29,8 @@ export const buildQueryParams = ({ category, country, sources }: Partial<QueryPa
   if (sources) {
     queryParams.sources = sources;
   }
-  return queryParams;
-}
+  return { ...queryParams, pageSize: 100 };
+};
 
 export const useRouter = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -41,22 +45,22 @@ export const useRouter = () => {
 
   const updaetQuery = (params: object) => {
     setSearchParams({ ...query, ...params });
-  }
+  };
 
   const removeQuery = (key: string) => {
     const { [key]: omitted, ...res } = query;
 
     return res;
-  }
+  };
 
   const get = (key: string) => {
     return query[key];
-  }
+  };
 
   return {
     query,
     get,
     removeQuery,
     updaetQuery,
-  }
-}
+  };
+};

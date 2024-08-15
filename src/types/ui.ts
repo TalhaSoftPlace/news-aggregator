@@ -3,4 +3,6 @@ export enum DropDownKeys {
   value = "value",
   items = "items",
   onItemChange = "onItemChange",
+  loading = "loading",
+  title = "title",
 }
