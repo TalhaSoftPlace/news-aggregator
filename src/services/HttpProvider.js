@@ -1,16 +1,14 @@
 import axios from "axios";
 
-const NEWS_API_DOMAIN = process.env.NEWS_API_DOMAIN;
-const NEWS_API_KEY = "5240e07265b5436c8b4e223be795a2eb";
-const NEWS_URL = `https://newsapi.org/v2/`;
+const NEWS_API_DOMAIN = process.env.REACT_APP_NEWS_API_DOMAIN;
+const NEWS_API_KEY = process.env.REACT_APP_NEWS_API_KEY;
 
-export const BASEURL = NEWS_URL;
+export const BASEURL = NEWS_API_DOMAIN;
 
 export async function getApiRequestHeader() {
   return {
     Accept: "application/json",
     "Content-Type": "application/json",
-    // "Access-Control-Allow-Origin": "*",
   };
 }
 
@@ -65,16 +63,6 @@ export async function newRequest({ method, url, data, headers }) {
 export async function get(url, params, featureAndAction, config) {
   const { filter, ...otherParams } = params ?? {};
   let queryParams = {};
-
-  if (config?.detail) {
-    url = `${url}/${filter}`;
-    return request({
-      method: "get",
-      url: url,
-      data: { featureAndAction },
-      ...config,
-    });
-  }
 
   for (const key in otherParams) {
     if (!url.includes(key)) {

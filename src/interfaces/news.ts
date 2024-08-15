@@ -69,3 +69,11 @@ export interface GetHeadlinesNewsActionPayload extends ArticlesResponse {
 export interface GetSourcesActionPayload extends SourcesResponse {
   [GlobalKeys.status]: string;
 }
+
+export interface QueryParamsProps {
+  category: string;
+  country: string;
+  sources: string;
+  from: string;
+  to: string;
+}

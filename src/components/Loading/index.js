@@ -7,7 +7,7 @@ const spinAnimation = keyframes`
 
 export const SpinnerContainer = styled.div`
   position: fixed;
-  top: 140px;
+  top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
 `;

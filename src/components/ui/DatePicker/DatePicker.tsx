@@ -10,10 +10,10 @@ export const DatePicker = ({
   label: string;
 }) => {
   const [date, setDate] = useState("");
-  const handleDateChagne = useCallback((date: string) => {
+  const handleDateChagne = (date: string) => {
     setDate(date);
     onDateChange(date);
-  }, []);
+  };
   return (
     <Wrapper>
       <label>{label}:</label>

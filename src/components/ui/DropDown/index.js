@@ -16,3 +16,8 @@ export const ListItems = styled.div`
     display: none;
   }
 `;
+
+export const LoadingContainer = styled.div`
+width: 300px;
+heigh: 500px;
+`
