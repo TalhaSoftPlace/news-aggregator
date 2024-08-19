@@ -47,7 +47,7 @@ To stop the running Docker container, press Ctrl + C in the terminal where the c
 
 Alternatively, you can list all running containers and stop a specific container using its ID:
     
-    ```sh
+    
     docker ps
     docker stop <container_id>
 
@@ -56,5 +56,5 @@ Alternatively, you can list all running containers and stop a specific container
     Cleaning Up
     If you want to remove the Docker image after you're done, you can do so with the following command:
     
-    ```sh
+    
     docker rmi t-news-app
