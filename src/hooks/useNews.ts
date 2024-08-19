@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 import {
   fetchAllNews,
   readGuardianNews,
@@ -6,21 +6,16 @@ import {
   readNews,
   readNewYorkTimesNews,
   readSources,
-  setNews,
 } from "../store/slices/newsSlice/news";
-import { buildQueryParams, setDocumentTitle, useRouter } from "../utils";
+import { buildQueryParams, setDocumentTitle } from "../utils";
 import { useAppDispatch, useAppSelector } from "./useRedux";
 import { BuildQueryType, NewsProps } from "../interfaces";
 
 import { Sources as SourcesKeys } from "../types";
 
-export const useNews = ({ category, country }: NewsProps) => {
-  const { get } = useRouter();
+export const useNews = ({ category }: NewsProps) => {
 
-  const queryFromDate = get("from");
-  const queryToDate = get("to");
-
-  const { articles, loading, sources } = useAppSelector((state) => state.news);
+  const { articles, loading } = useAppSelector((state) => state.news);
   const dispatch = useAppDispatch();
 
   const handleDataSourceChange = (sources: string) => {
@@ -50,14 +45,14 @@ export const useNews = ({ category, country }: NewsProps) => {
       newyorkTimesParams: {},
     };
     if (range === "from") {
-      params.newsParams.from = queryFromDate;
-      params.newyorkTimesParams.begin_date = queryFromDate;
-      params.gaurdianNewsParams["from-date"] = queryFromDate;
-      return;
+      params.newsParams.from = date;
+      params.newyorkTimesParams.begin_date = date;
+      params.gaurdianNewsParams["from-date"] = date;
+    } else {
+      params.newsParams.to = date;
+      params.newyorkTimesParams.end_date = date;
+      params.gaurdianNewsParams["to-date"] = date;
     }
-    params.newsParams.to = queryToDate;
-    params.newyorkTimesParams.end_date = queryToDate;
-    params.gaurdianNewsParams["to-date"] = queryToDate;
     dispatch(fetchAllNews({ params }));
   };
 

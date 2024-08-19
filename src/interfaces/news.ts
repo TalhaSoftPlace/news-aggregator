@@ -18,14 +18,21 @@ export interface NewsState {
   [GlobalKeys.Error]: string | null;
   [GlobalKeys.totalResults]: number;
   [SliceStateKeys.newsFeeds]: NewsFeed[] | null;
+  [GlobalKeys.originalArticles]: Article[] | null;
   [GlobalKeys.articles]: Article[] | null;
   [GlobalKeys.sources]: Sources[] | null;
   [GlobalKeys.theGuardianNewsSections]: TheGuardianNewsSections[] | null;
   [GlobalKeys.news]: Article[] | null;
   [GlobalKeys.newYorkTimes]: Article[] | null;
   [GlobalKeys.theguardianNews]: Article[] | null;
+  [GlobalKeys.authors]: Authors;
 }
 
+export interface Authors {
+  [GlobalKeys.newsAuthors]: string[] | null;
+  [GlobalKeys.newYorkTimesAuthros]: string[] | null;
+  [GlobalKeys.guardianAuthros]: string[] | null;
+}
 export interface SourceResponse {
   [SourceKeys.id]: string;
   [SourceKeys.name]: string;

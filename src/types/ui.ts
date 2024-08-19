@@ -6,3 +6,8 @@ export enum DropDownKeys {
   loading = "loading",
   title = "title",
 }
+
+export enum DatePickerKeys {
+  onDateChange = "onDateChange",
+  label = "label",
+}

@@ -2,6 +2,7 @@ import { AsyncThunk, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import apiServices from "../../../services/requestHandler";
 import {
   Article,
+  Authors,
   GetHeadlinesNewsActionPayload,
   GetNewsApiResponse,
   GetNewYorkTimesApiResponse,
@@ -13,17 +14,23 @@ import {
 } from "../../../interfaces/news";
 import { PayloadAction } from "@reduxjs/toolkit";
 import {
-  getFullImageUrl,
   normalizeArticles,
   transformNewYorkTimes,
   transformTheGuardian,
 } from "../../../utils";
+import { toast } from "react-toastify";
 
 const initialState: NewsState = {
+  originalArticles: null,
   articles: null,
   news: null,
   newYorkTimes: null,
   theguardianNews: null,
+  authors: {
+    guardianAuthros: null,
+    newsAuthors: null,
+    newYorkTimesAuthros: null,
+  },
   sources: null,
   newsFeeds: null,
   theGuardianNewsSections: null,
@@ -50,9 +57,7 @@ export const fetchAllNews: AsyncThunk<boolean, object, object> | any =
         apiServices.thegaurdianNews(gaurdianNewsParams),
       ]);
 
-      const transformNews: Article[] = newsApiResponse?.data?.articles;
-
-      console.log(newyorkTimesApiResponse);
+      const newsResponse: Article[] = newsApiResponse?.data?.articles;
 
       const normalizedNYT = normalizeArticles(
         newyorkTimesApiResponse,
@@ -63,19 +68,28 @@ export const fetchAllNews: AsyncThunk<boolean, object, object> | any =
         transformTheGuardian
       );
 
+      const authors: Authors = {
+        newsAuthors: newsResponse?.map((item) => item.author),
+        newYorkTimesAuthros: normalizedNYT.map((item) => item.author),
+        guardianAuthros: normalizedGuardian.map((item) => item.author),
+      };
+
       const combineArticles = [
-        ...(Array.isArray(transformNews) ? transformNews : []),
+        ...(Array.isArray(newsResponse) ? newsResponse : []),
         ...(Array.isArray(normalizedNYT) ? normalizedNYT : []),
         ...(Array.isArray(normalizedGuardian) ? normalizedGuardian : []),
       ];
 
-      thunkApi.dispatch(setNews(transformNews));
-      thunkApi.dispatch(setGuardianNews(transformNews));
-      thunkApi.dispatch(setNewYorkTimesNes(transformNews));
+      thunkApi.dispatch(setAuthors(authors));
+
+      thunkApi.dispatch(setNews(newsResponse));
+      thunkApi.dispatch(setGuardianNews(normalizedGuardian));
+      thunkApi.dispatch(setNewYorkTimesNes(normalizedNYT));
+      thunkApi.dispatch(setOriginalArticles(combineArticles));
 
       return combineArticles;
     } catch (error: any) {
-      // return false;
+      toast("Something went wrong");
     }
   });
 
@@ -100,6 +114,7 @@ export const readNewYorkTimesNews: AsyncThunk<boolean, object, object> | any =
 
       const normalizedNYT = normalizeArticles(response, transformNewYorkTimes);
       thunkApi.dispatch(setArticles(normalizedNYT));
+      thunkApi.dispatch(setOriginalArticles(normalizedNYT));
       return normalizedNYT;
     } catch (e: any) {
       return false;
@@ -118,6 +133,7 @@ export const readGuardianNews: AsyncThunk<boolean, object, object> | any =
         transformTheGuardian
       );
       thunkApi.dispatch(setArticles(normalizedGuardian));
+      thunkApi.dispatch(setOriginalArticles(normalizedGuardian));
       return normalizedGuardian;
     } catch (e: any) {
       return false;
@@ -176,6 +192,12 @@ const newsSlice = createSlice({
   reducers: {
     setArticles: (state, action) => {
       state.articles = action.payload;
+    },
+    setOriginalArticles: (state, action) => {
+      state.originalArticles = action.payload;
+    },
+    setAuthors: (state, action) => {
+      state.authors = action.payload;
     },
     setNews: (state, action) => {
       state.news = action.payload;
@@ -286,7 +308,9 @@ const newsSlice = createSlice({
 export default newsSlice.reducer;
 export const {
   setArticles,
+  setOriginalArticles,
   setNews,
+  setAuthors,
   setNewsFeeds,
   setError,
   setSources,

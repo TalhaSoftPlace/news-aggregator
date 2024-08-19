@@ -1,18 +1,10 @@
-import { useId, useRef, useState } from "react";
-import { IoCloseOutline } from "react-icons/io5";
-import { Button, Form, FormControl, Nav, Navbar } from "react-bootstrap";
-import { LinkContainer } from "react-router-bootstrap";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import "./NavBar.css";
-import { DropDown } from "../ui/DropDown/DropDown";
-// import { DropDown } from "../ui/DropDown/DropDown";
 
 function NavBar() {
   const navigate = useNavigate();
 
-  const navRef = useRef(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const [isCollapsed, setIsCollapsed] = useState(true);
 
   const handleInputChange = (e: any) => {
     setSearchQuery(e.target.value);
@@ -22,22 +14,15 @@ function NavBar() {
     e.preventDefault();
     navigate(`/search/${searchQuery}`);
     setSearchQuery("");
-    setIsCollapsed(true);
   };
-
-  const handleNavClick = () => {
-    setIsCollapsed(true);
-  };
-
-  const isSearchButtonDisabled = searchQuery.trim() === "";
 
   return (
     <>
-      <div className="fixed top-0 left-0 right-0 h-[72px] w-full bg-[[#343a40] shadow-xl text-white flex justify-between items-center px-4">
-        <h1>The News</h1>
-        <div className="relative">
+      <div className="fixed top-0 left-0 right-0 h-[72px] w-full bg-[#343a40] z-50 shadow-xl text-white flex justify-between items-center px-4">
+        <Link to="/"className="no-underline" >The News</Link>
+          <form onSubmit={handleSubmit} className="relative">
           <svg
-            className="absolute w-4 h-4 top-1/2 right-4 transform -translate-y-1/2 text-gray-500"
+            className="absolute w-4 h-4 top-1/2 right-4 transform -translate-y-1/2 text-white"
             aria-hidden="true"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -53,10 +38,11 @@ function NavBar() {
           </svg>
           <input
             type="input"
-            className="bg-[#343a40] w-[300px] h-12 outline-none rounded-lg pl-4 pr-12 text-sm"
+            className="bg-black shadow-lg w-[190px] md:w-[300px] h-12 outline-none rounded-lg pl-4 pr-12 text-sm"
             placeholder="Search Articles"
+            onChange={handleInputChange}
           />
-        </div>
+          </form>
       </div>
     </>
   );

@@ -1,21 +1,20 @@
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import Form from "react-bootstrap/Form";
 import { Wrapper } from ".";
+import { DatePickerProps } from "../../../interfaces";
 
 export const DatePicker = ({
   onDateChange,
   label,
-}: {
-  onDateChange: (value: string) => void;
-  label: string;
-}) => {
+  className,
+}: DatePickerProps) => {
   const [date, setDate] = useState("");
   const handleDateChagne = (date: string) => {
     setDate(date);
     onDateChange(date);
   };
   return (
-    <Wrapper>
+    <Wrapper className={className}>
       <label>{label}:</label>
       <Form.Control
         type="date"

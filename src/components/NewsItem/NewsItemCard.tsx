@@ -4,23 +4,23 @@ import { Article } from "../../interfaces";
 import { imageNotAvailable } from "../../assets";
 
 export const NewsItemCard = ({
-  author,
-  content,
   description,
-  publishedAt,
-  source,
   title,
   url,
   urlToImage,
-}: Article) => {  
+}: Article) => {
   return (
-    <div className="max-w-[358px] w-full max-h-[490px] bg-[rgb(41, 47, 51)] border-2 dark:border-gray-600 border-t-0 rounded-lg rounded-t-none shadow-xl transition-transform duration-700 ease-in-out hover:-translate-y-1 hover:scale-105">
-      <img
-        className="w-[382px] h-[250px] rounded-lg"
-        src={urlToImage || imageNotAvailable}
-        alt=""
-      />
-      <div className="p-3">
+    <div className="max-w-[358px] w-full h-[490px] bg-[rgb(41, 47, 51)] shadow-xl transition-transform duration-700 ease-in-out hover:-translate-y-1 hover:scale-105">
+      {urlToImage ? (
+        <img
+          className="w-[358px] h-[250px] rounded-t-lg"
+          src={urlToImage}
+          alt=""
+        />
+      ) : (
+        <div className="w-full h-[250px] bg-black border-2 border-gray-600 rounded-t-lg"></div>
+      )}
+      <div className="p-3 border-2 border-gray-600 border-t-0">
         <h5 className="mb-2 text-lg line-clamp-2 font-bold tracking-tight text-gray-900 dark:text-white">
           {title}
         </h5>

@@ -7,7 +7,8 @@ import { Container, Header, card } from "./index";
 import { useAppDispatch, useAppSelector } from "../../hooks/useRedux";
 import { NewsItem } from "../NewsItem/NewsItem";
 import { capitaLize, setDocumentTitle } from "../../utils";
-import { readAllNews } from "../../store/slices/newsSlice/news";
+import { fetchAllNews } from "../../store/slices/newsSlice/news";
+import { BuildQueryType } from "../../interfaces";
 
 function Search() {
   const {
@@ -22,11 +23,13 @@ function Search() {
     totalArticles === 0 ? noFound : loading ? searching : query ?? ""
   );
   useEffect(() => {
-    dispatch(readAllNews({ params: { q: query } }));
+    const params: BuildQueryType = {
+      gaurdianNewsParams: { q: query },
+      newsParams: { category: "general", q: query },
+      newyorkTimesParams: { q: query },
+    };
+    dispatch(fetchAllNews({ params }));
   }, [query]);
-
-  console.log(articles);
-  
 
   return (
     <>

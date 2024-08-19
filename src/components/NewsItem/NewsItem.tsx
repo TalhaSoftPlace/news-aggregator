@@ -26,7 +26,7 @@ export const NewsItem = ({
         <Card.Title>{title}</Card.Title>
         <Card.Text className="card-description">{description}</Card.Text>
         <Details source={source} publishedAt={publishedAt} />
-        <Button className="card-btn" href={url} target="_blank">
+        <Button className="card-btn w-[150px] flex gap-x-4" href={url} target="_blank">
           Read more <ArrowIcon className="arrow-icon" />
         </Button>
       </Card.Body>

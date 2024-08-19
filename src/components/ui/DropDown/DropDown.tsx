@@ -1,7 +1,13 @@
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import { DropDownProps } from "../../../interfaces";
+import { useOutsideClick } from "../../../utils/hooks";
 
-export const DropDown = ({ items, title, onItemChange }: DropDownProps) => {
+export const DropDown = ({
+  items,
+  title,
+  className,
+  onItemChange,
+}: DropDownProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const [selectedItem, setSelectedItem] = useState({ label: title, value: "" });
@@ -16,8 +22,13 @@ export const DropDown = ({ items, title, onItemChange }: DropDownProps) => {
     setIsOpen((prev) => !prev);
   };
 
+  const buttonRef = useOutsideClick<HTMLDivElement>(() => setIsOpen(false));
+
   return (
-    <div className="relative inline-block text-left">
+    <div
+      className={`relative inline-block text-left ${className}`}
+      ref={buttonRef}
+    >
       <button
         onClick={handleDropDownToggle}
         type="button"

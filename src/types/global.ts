@@ -9,11 +9,17 @@ export enum GlobalKeys {
   results = "results",
   docs = "docs",
   sources = "sources",
+  originalArticles = "originalArticles",
   articles = "articles",
   theGuardianNewsSections = "theGuardianNewsSections",
   news = "news",
   newYorkTimes = "newYorkTimes",
   theguardianNews = "theguardianNews",
+  className = "className",
+  authors = "authors",
+  newsAuthors = "newsAuthors",
+  guardianAuthros = "guardianAuthros",
+  newYorkTimesAuthros = "newYorkTimesAuthros"
 }
 
 export enum QueryParamsKeys {
