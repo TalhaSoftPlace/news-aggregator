@@ -1,4 +1,12 @@
-import { QueryParamsProps, Sources } from "../interfaces/news";
+import {
+  Article,
+  BuildQueryArgs,
+  BuildQueryType,
+  GetNewYorkTimesApiResponse,
+  GetTheGuardianNewsApiResponse,
+  QueryParamsProps,
+  Sources,
+} from "../interfaces/news";
 import { useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 
@@ -12,24 +20,55 @@ export const setDocumentTitle = (title: string) => {
 
 export const transformSourcesToDropDownItems = (items: Sources[] | null) => {
   if (!items) return null;
-  return items.map((item) => ({ label: item.name, value: item.id }));
+  return items?.map((item) => ({ label: item.name, value: item.id }));
 };
 
 export const buildQueryParams = ({
   category,
-  country,
-  sources,
-}: Partial<QueryParamsProps>) => {
-  const queryParams: Partial<QueryParamsProps> = {};
-
-  if (category && country) {
-    queryParams.category = category;
-    queryParams.country = country;
+  q,
+  from,
+  to,
+}: Partial<BuildQueryArgs>) => {
+  const queryParams: Partial<BuildQueryType> = {};
+  if (category) {
+    queryParams.newsParams = { ...queryParams.newsParams, category };
+    queryParams.gaurdianNewsParams = {
+      ...queryParams.gaurdianNewsParams,
+      // section: category,
+    };
+    queryParams.newyorkTimesParams = {
+      ...queryParams.newyorkTimesParams,
+      // fq: `section_name:(${category})`,
+    };
   }
-  if (sources) {
-    queryParams.sources = sources;
+  if (from) {
+    queryParams.newsParams = { ...queryParams.newsParams, category, from };
+    queryParams.gaurdianNewsParams = {
+      ...queryParams.gaurdianNewsParams,
+      "from-date": from,
+    };
+    queryParams.newyorkTimesParams = {
+      ...queryParams.newyorkTimesParams,
+      begin_date: from,
+    };
   }
-  return { ...queryParams, pageSize: 100 };
+  if (to) {
+    queryParams.newsParams = { ...queryParams.newsParams, category, to };
+    queryParams.gaurdianNewsParams = {
+      ...queryParams.gaurdianNewsParams,
+      "to-date": to,
+    };
+    queryParams.newyorkTimesParams = {
+      ...queryParams.newyorkTimesParams,
+      end_date: from,
+    };
+  }
+  if (q) {
+    queryParams.newsParams = { ...queryParams.newsParams, q };
+    queryParams.gaurdianNewsParams = { ...queryParams.gaurdianNewsParams, q };
+    queryParams.newyorkTimesParams = { ...queryParams.newyorkTimesParams, q };
+  }
+  return { ...queryParams };
 };
 
 export const useRouter = () => {
@@ -37,13 +76,13 @@ export const useRouter = () => {
 
   const query = useMemo(() => {
     const params: any = {};
-    searchParams.forEach((value, key) => {
+    searchParams?.forEach((value, key) => {
       params[key] = value;
     });
     return params;
   }, [searchParams]);
 
-  const updaetQuery = (params: object) => {
+  const updateQuery = (params: object) => {
     setSearchParams({ ...query, ...params });
   };
 
@@ -61,6 +100,52 @@ export const useRouter = () => {
     query,
     get,
     removeQuery,
-    updaetQuery,
+    updateQuery,
   };
 };
+
+export const getFullImageUrl = (imagePath: string): string => {
+  const baseUrl = "https://static01.nyt.com/";
+  return `${baseUrl}${imagePath}`;
+};
+
+export const normalizeArticles = <T>(
+  apiResponse: T,
+  transform: (data: T) => Article[]
+): Article[] => {
+  return transform(apiResponse);
+};
+
+export const transformNewYorkTimes = (
+  newyorkTimesApiResponse: GetNewYorkTimesApiResponse
+): Article[] =>
+  newyorkTimesApiResponse?.data?.response?.docs?.map((doc) => ({
+    title: doc?.headline?.main,
+    author: doc?.byline?.original,
+    url: doc?.web_url,
+    urlToImage: doc.multimedia[0] && getFullImageUrl(doc?.multimedia[0]?.url),
+    description: doc?.abstract,
+    content: doc?.abstract,
+    publishedAt: doc?.pub_date,
+    source: {
+      id: doc?._id,
+      name: doc?.source,
+    },
+  }));
+
+export const transformTheGuardian = (
+  guardianApiResponse: GetTheGuardianNewsApiResponse
+): Article[] =>
+  guardianApiResponse?.data?.response?.results?.map((result) => ({
+    title: result?.webTitle,
+    author: result?.pillarName,
+    url: result?.webUrl,
+    urlToImage: "",
+    description: result?.webTitle,
+    content: result?.webTitle,
+    publishedAt: result?.webPublicationDate,
+    source: {
+      id: result?.id,
+      name: result?.pillarName,
+    },
+  }));

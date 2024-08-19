@@ -1,99 +1,80 @@
 import { useEffect, useMemo } from "react";
 import {
-  readAllNews,
+  fetchAllNews,
+  readGuardianNews,
+  readGuardianSections,
+  readNews,
+  readNewYorkTimesNews,
   readSources,
-  readTopNews,
   setNews,
 } from "../store/slices/newsSlice/news";
-import {
-  buildQueryParams,
-  setDocumentTitle,
-  transformSourcesToDropDownItems,
-  useRouter,
-} from "../utils";
+import { buildQueryParams, setDocumentTitle, useRouter } from "../utils";
 import { useAppDispatch, useAppSelector } from "./useRedux";
-import { NewsProps } from "../interfaces";
+import { BuildQueryType, NewsProps } from "../interfaces";
+
+import { Sources as SourcesKeys } from "../types";
 
 export const useNews = ({ category, country }: NewsProps) => {
-  const { updaetQuery, get } = useRouter();
+  const { get } = useRouter();
 
-  const querySources = get("sources");
   const queryFromDate = get("from");
   const queryToDate = get("to");
 
   const { articles, loading, sources } = useAppSelector((state) => state.news);
   const dispatch = useAppDispatch();
 
-  const handleSourceChange = (sources: string) => {
-    updaetQuery({ sources });
-  };
+  const handleDataSourceChange = (sources: string) => {
+    const DataSource: SourcesKeys = sources as SourcesKeys;
 
-  const handleAuthorChange = (author: string) => {
-    dispatch(setNews(articles?.filter((item) => item.author === author)));
+    const queryPrams = buildQueryParams({
+      category,
+    });
+
+    const lookup: Record<SourcesKeys, any> = {
+      [SourcesKeys.All]: () => dispatch(fetchAllNews({ params: queryPrams })),
+      [SourcesKeys.News]: () =>
+        dispatch(readNews({ params: queryPrams.newsParams })),
+      [SourcesKeys.NEW_YORK_TIMES]: () =>
+        dispatch(readNewYorkTimesNews({ params: {} })),
+      [SourcesKeys.The_GUARDIAN_NEWS]: () =>
+        dispatch(readGuardianNews({ params: { "page-size": 50 } })),
+    };
+
+    lookup[DataSource]();
   };
 
   const handleDateChange = (range: "to" | "from", date: string) => {
+    const params: BuildQueryType = {
+      gaurdianNewsParams: {},
+      newsParams: { category },
+      newyorkTimesParams: {},
+    };
     if (range === "from") {
-      updaetQuery({ from: date });
+      params.newsParams.from = queryFromDate;
+      params.newyorkTimesParams.begin_date = queryFromDate;
+      params.gaurdianNewsParams["from-date"] = queryFromDate;
       return;
     }
-    updaetQuery({ to: date });
+    params.newsParams.to = queryToDate;
+    params.newyorkTimesParams.end_date = queryToDate;
+    params.gaurdianNewsParams["to-date"] = queryToDate;
+    dispatch(fetchAllNews({ params }));
   };
-
-  const sourcesItems = useMemo(
-    () => transformSourcesToDropDownItems(sources),
-    [sources]
-  );
 
   useEffect(() => {
     setDocumentTitle(category);
     const queryPrams = buildQueryParams({
       category,
-      country,
     });
-    dispatch(readTopNews({ params: queryPrams }));
-  }, [category, country, dispatch]);
-
-  useEffect(() => {
-    querySources &&
-      dispatch(
-        readTopNews({ params: { sources: querySources, pageSize: 100 } })
-      );
-  }, [querySources, dispatch]);
-
-  useEffect(() => {
-    if (queryFromDate && queryToDate && sources) {
-      dispatch(
-        readAllNews({
-          params: {
-            from: queryFromDate,
-            to: queryToDate,
-            sources: sources?.[0]?.id,
-            pageSize: 100,
-          },
-        })
-      );
-    }
-  }, [queryFromDate, queryToDate, sources, dispatch]);
-
-  useEffect(() => {
+    dispatch(fetchAllNews({ params: queryPrams }));
     dispatch(readSources());
-  }, [dispatch]);
-
-  const authors = useMemo(
-    () =>
-      articles?.map((item) => ({ label: item.author, value: item.author })) ??
-      null,
-    [articles]
-  );
+    dispatch(readGuardianSections());
+  }, []);
 
   return {
-    handleSourceChange,
-    handleAuthorChange,
+    handleDataSourceChange,
     handleDateChange,
-    sourcesItems,
     articles,
     loading,
-    authors,
   };
 };

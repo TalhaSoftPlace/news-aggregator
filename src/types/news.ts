@@ -1,6 +1,5 @@
 export enum SourceKeys {
   source = "source",
-  sources = "sources",
   id = "id",
   name = "name",
   description = "description",
@@ -11,7 +10,6 @@ export enum SourceKeys {
 }
 
 export enum ArticlesKeys {
-  articles = "articles",
   author = "author",
   title = "title",
   description = "description",
@@ -24,4 +22,15 @@ export enum ArticlesKeys {
 export enum NewsKeys {
   category = "category",
   country = "country",
+}
+
+export enum SliceStateKeys {
+  newsFeeds = "newsFeeds",
+}
+
+export enum Sources {
+  All = "All",
+  News = "News",
+  The_GUARDIAN_NEWS = "The_GUARDIAN_NEWS",
+  NEW_YORK_TIMES = "NEW_YORK_TIMES",
 }

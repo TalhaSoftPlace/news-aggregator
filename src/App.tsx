@@ -15,19 +15,11 @@ function App() {
         <NavBar />
         <ErrorBoundary>
           <Routes>
-            {router.map((path) => (
-              <Route
-                key={id}
-                path={path.path}
-                element={
-                  <News
-                    key={path.key}
-                    category={path.category}
-                    country={path.country}
-                  />
-                }
-              />
-            ))}
+            <Route
+              key={id}
+              path={"/"}
+              element={<News category={"general"} country={"us"} />}
+            />
             <Route path="/search/:query" element={<Search />} />
           </Routes>
         </ErrorBoundary>

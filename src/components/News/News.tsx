@@ -1,34 +1,37 @@
 import Loading from "../Loading/Loading";
-import { Col, Row } from "react-bootstrap";
 import { header } from "../../config/config";
-import { Container, Filters, Header, card } from "./index";
-import { NewsItem } from "../NewsItem/NewsItem";
 import { NewsProps } from "../../interfaces/news";
-import {
-  capitaLize,
-} from "../../utils";
-import { DropDown } from "../ui/DropDown/DropDown";
-import { DatePicker } from "../ui/DatePicker/DatePicker";
+import { capitaLize } from "../../utils";
 import { useNews } from "../../hooks/useNews";
+import { NewsItemCard } from "../NewsItem/NewsItemCard";
+import { DatePicker } from "../ui/DatePicker/DatePicker";
+import { ArticlesFilters } from "./Filters/ArticlesFilters";
+import { DropDownItem } from "../../interfaces";
+import { Sources } from "../../types";
+import { DropDown } from "../ui/DropDown/DropDown";
+
+const DATA_SOURCE: DropDownItem[] = [
+  { label: "All", value: Sources.All },
+  { label: "News", value: Sources.News },
+  { label: "The Guardian", value: Sources.The_GUARDIAN_NEWS },
+  { label: "New York Times", value: Sources.NEW_YORK_TIMES },
+];
 
 export const News = ({ category, country }: NewsProps) => {
   const {
-    handleAuthorChange,
-    handleSourceChange,
+    handleDataSourceChange,
     handleDateChange,
-    sourcesItems,
     articles,
     loading,
-    authors,
   } = useNews({ category, country });
+
   return (
-    <>
-      <Filters>
+    <div className="max-w-screen-2xl mx-auto px-4 mt-[90px]">
+      <div className="flex gap-x-4">
         <DropDown
-          title="Please Select Sources"
-          items={sourcesItems}
-          onItemChange={handleSourceChange}
-          loading={loading}
+          title="Data Source"
+          items={DATA_SOURCE}
+          onItemChange={handleDataSourceChange}
         />
         <DatePicker
           label="From"
@@ -38,31 +41,24 @@ export const News = ({ category, country }: NewsProps) => {
           label="To"
           onDateChange={(date: string) => handleDateChange("to", date)}
         />
-        <DropDown
-          title="Please Select Authors"
-          items={authors}
-          onItemChange={handleAuthorChange}
-          loading={loading}
-        />
-      </Filters>
+      </div>
       {loading ? (
         <Loading />
       ) : (
         <>
-          <Header>{header(capitaLize(category))}</Header>
-          <Container>
-            <Row>
+          <ArticlesFilters />
+          <div className="text-3xl font-bold my-10 text-white text-center">
+            {header(capitaLize(category))}
+          </div>
+          <div className="">
+            <div className="flex justify-center flex-wrap gap-4">
               {articles?.map((article, idx) => {
-                return (
-                  <Col sm={12} md={6} lg={4} style={card} key={idx}>
-                    <NewsItem {...article} />
-                  </Col>
-                );
+                return <NewsItemCard {...article} />;
               })}
-            </Row>
-          </Container>
+            </div>
+          </div>
         </>
       )}
-    </>
+    </div>
   );
 };

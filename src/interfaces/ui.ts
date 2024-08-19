@@ -8,6 +8,5 @@ export interface DropDownItem {
 export interface DropDownProps {
   [DropDownKeys.items]: DropDownItem[] | null;
   [DropDownKeys.onItemChange]: (value: string) => void;
-  [DropDownKeys.loading]: boolean;
   [DropDownKeys.title]: string;
 }
